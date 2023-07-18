@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as THREE from "three";
 
 import React, { Suspense, useEffect, useRef, useState } from "react";
@@ -19,7 +20,6 @@ import touchIcon from "./assets/Touch.png";
 
 const PreviewModule = ({
                            id,
-                           env,
                            isMobile,
                            showControls = false,
                            onSuccessRender = () => {}, // callback on 3d preview done,
@@ -344,7 +344,7 @@ const PreviewModule = ({
             >
                 <pointsMaterial
                     color="#fff"
-                    transparent
+                    transparent={true}
                     depthTest={false}
                     depthWrite={false}
                     opacity={opacity}
