@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import PreviewModule from "artpix-3d-preview";
+import PreviewModule from "./PreviewModule";
 
 function App() {
   return (
