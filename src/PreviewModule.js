@@ -19,15 +19,16 @@ import px from "./assets/px.jpg";
 import touchIcon from "./assets/Touch.png";
 
 const PreviewModule = ({
-                           id,
-                           isMobile,
-                           showControls = false,
-                           onSuccessRender = () => {}, // callback on 3d preview done,
-                           manualSettings = {},
-                           onRenderOpacity = () => {},
-                           isMobileApp = false,
-                           mobileDimensions = {},
-                       }) => {
+    id,
+    isMobile,
+    showControls = false,
+    onSuccessRender = () => {}, // callback on 3d preview done,
+    manualSettings = {},
+    onRenderOpacity = () => {},
+    isMobileApp = false,
+    mobileDimensions = {},
+    portrait,
+}) => {
     const [testObj, setTestObj] = useState("");
     const [changeValue, setChangeValue] = useState(0.005);
     const [opacity, setOpacity] = useState(0.1);
@@ -45,12 +46,14 @@ const PreviewModule = ({
     const [objectInfo, setObjectInfo] = useState({});
     const [progress, setProgress] = useState(0);
     const [showProcessing, setShowProcessing] = useState(false);
+    const [shapeRotation, setShapeRotation] = useState([0, 0, 1.5708]);
+    const [objectRotation, setObjectRotation] = useState([0, 0, 0]);
     const group = useRef(null);
     const basicSize = useRef(null);
     const progressIntervalRef = useRef(null);
     const oldLogic = ["3CRZ", "3CRA", "3CRT", "3CSY", "3CHX", "3CIL", "3CIM"];
     const objTestLoader = new OBJLoader();
-    console.log("id", id);
+
     const getPreview = () => {
         axios
             .get(`https://orderarchive.okd.artpix3d.com/api/v1/shop/preview-3d/e01f01eb-f2a0-4586-9a04-ecda9a2b0a54`)
@@ -162,7 +165,7 @@ const PreviewModule = ({
         : setZoomValue(prevState => prevState + 0.2)
     }
 
-    const Shape = () => {
+    const Shape = ({rotation}) => {
         const { gl, scene, camera } = useThree();
         const model = useRef(null);
         const texture = useTexture(px);
@@ -171,7 +174,6 @@ const PreviewModule = ({
         const material = new THREE.MeshBasicMaterial({
             color: "#049ef4"
         });
-
         let rotationValue = crystalData?.form === "Iceberg" ? [0, 0, 1.5708] : [0, 0, 1.5708];
 
         if (crystalData?.sku === "2OHM") {
@@ -201,13 +203,13 @@ const PreviewModule = ({
                 geometry={shape?.children[0]?.geometry}
                 position={[0, 0, 0]}
                 material={material}
-                rotation={rotationValue}
+                rotation={rotation}
             />
             : null
         )
     }
 
-    const Portrait = ({ object }) => {
+    const Portrait = ({ object, rotation }) => {
         const parentContainer =  isMobileApp ? mobileDimensions :document?.getElementById("preview-3d").parentElement;
         const group = useRef(null);
         const { camera } = useThree();
@@ -340,7 +342,7 @@ const PreviewModule = ({
                 geometry={object}
                 ref={group}
                 scale={[1, 1, 1]}
-                rotation={rotationValue}
+                rotation={rotation}
             >
                 <pointsMaterial
                     color="#fff"
@@ -437,6 +439,24 @@ const PreviewModule = ({
         }
     }, [testShape]);
 
+    const orientationChange = event => {
+        console.log(
+            `the orientation of the device is now ${event.target.screen.orientation.angle}`,
+        );
+        if (event.target.screen.orientation.angle === 90) {
+            setObjectRotation([0, 0, 1.5708]);
+            setShapeRotation([0, 0, 0])
+        } else {
+            setObjectRotation([0, 0, 0]);
+            setShapeRotation([0, 0, 1.5708])
+        }
+    }
+
+    useEffect(() => {
+        addEventListener("orientationchange", (event) => orientationChange(event));
+        removeEventListener("orientationchange", () => orientationChange())
+    }, []);
+
     return (
         <div id="preview-3d">
             {testPortrait && showProcessing
@@ -499,8 +519,9 @@ const PreviewModule = ({
                          <group ref={group}>
                              <Portrait
                                  object={testPortrait}
+                                 rotation={objectRotation}
                              />
-                             <Shape />
+                             <Shape rotation={shapeRotation}/>
                          </group>
                      </Suspense>
                  </Canvas>

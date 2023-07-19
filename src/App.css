@@ -1,9 +1,3 @@
-@media (orientation: landscape) {
-  #preview-3d {
-    transform: rotateZ(-90deg);
-  }
-}
-
 .App {
   text-align: center;
 }
