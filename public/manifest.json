@@ -1,5 +1,5 @@
 {
-  "short_name": "3d preview PWA",
+  "short_name": "3d Preview",
   "name": "3d preview PWA",
   "icons": [
     {
@@ -19,8 +19,18 @@
     }
   ],
   "start_url": "/?standalone=true",
-  "display_override": ["window-controls-overlay", "minimal-ui"],
+  "display_override": [
+    "standalone",
+    "fullscreen",
+    "window-controls-overlay"
+  ],
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "description": "3d preview PWA",
+  "lang": "en",
+  "orientation": "portrait",
+  "categories": [
+    "personalization"
+  ]
 }
