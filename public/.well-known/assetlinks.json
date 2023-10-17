@@ -1,0 +1,5 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target" : { "namespace": "android_app", "package_name": "chimerical-crostata-e93461.netlify.app",
+    "sha256_cert_fingerprints": ["3521d4a05a6e6597f30809a4c0748b93264d304472a1d6295ba39428e8e94f03"] }
+}]
